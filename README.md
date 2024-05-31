@@ -57,14 +57,14 @@ Before using the modules inthis repository, ensure you have the following instal
 
 ### Step 3: Clone the GitHub Repository for MoveIt! Config
 
-1. **Clone the moveit)config3 Config Package**:
+1. **Clone the moveit_config3 Config Package**:
    - Navigate to the `src` directory of your ROS workspace:
      ```bash
      cd ~/catkin_ws/src
      ```
    - Clone the repository:
      ```bash
-     git clone https://github.com/yourusername/pathplanning_moveit_config.git
+     git clone https://github.com/Farhana-M/Image-Guided-Robotic-Navigation/tree/main/moveit_config3/config
      ```
 
 ### Step 4: Install Dependencies and Build Workspace
@@ -98,7 +98,7 @@ Before using the modules inthis repository, ensure you have the following instal
 4. **Change the Path to the URDF**:
    - Ensure that the path to the robot's URDF file is correctly set in the MoveIt! configuration files. Typically, this can be found and modified in the `moveit_config3/config` directory, for example in the `robot_description.yaml` file:
      ```yaml
-     robot_description: 'file:///path/to/your/robot.urdf'
+     robot_description: 'file:///path/to/6dof_final_V4.urdf'
      ```
 
 ## Using PathPlanningV1
