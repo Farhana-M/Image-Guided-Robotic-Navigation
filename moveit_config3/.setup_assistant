@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: ""
+    relative_path: /home/rosbox/Downloads/6dof_final_V4.urdf
+    xacro_args: ""
+  SRDF:
+    relative_path: config/6dof_robot.srdf
+  CONFIG:
+    author_name: FM
+    author_email: moosafarhana@gmail.com
+    generated_timestamp: 1717066434
