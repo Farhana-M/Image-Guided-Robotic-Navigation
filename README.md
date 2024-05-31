@@ -1,16 +1,27 @@
 # Image-Guided Robotic Navigation
 
-This system is designed to select an optimal trajectory from a set of inputs. The PathPlanningV1 algorithm takes in a set of possible entry and target points (represented as a `vtkMRMLMarkupsFiducialNode`), and two binary image volumes representing the critical structures and target structure (represented as either a `vtkMRMLLabelMapVolumeNode` or `vtkMRMLLabelVolumeNode`). It returns two points representing a selected final trajectory (represented as `vtkMRMLMarkupsFiducialNode` and `vtkMRMLMarkupLineNode`). The final trajectory is selected with the constraints:
-- (a) Avoidance of a user-defined critical structure,
-- (b) Placement of the tool into a user-defined target structure,
-- (c) Trajectory below a user-defined length,
-- (d) Maximizing distance from the user-defined critical structure.
+# System Overview
 
-The selected trajectory points are sent to ROS via OpenIGTLink communication. OpenIGTLinkIF and ROS-IGTL-Bridge is used to facilitate communication between 3D Slicer and ROS. A node referred to as `Rmove_robot_to_pose` is implemented in ROS to receive data from ROS-IGTL-Bridge, convert this message to a pose message, and command the robot to move to the received position.
+This system utilizes 3D Slicer, OpenIGTLink communication, and ROS to select the optimal trajectory for a surgical navigation task, send the trajectory to ROS, and move a simulated 6DOF robot to the desired Cartesian coordinates.
+
+The `PathPlanningV1` algorithm takes in a set of possible entry and target points (represented as `vtkMRMLMarkupsFiducialNode`), and two binary image volumes representing the critical structures and target structure (represented as `vtkMRMLLabelMapVolumeNode`). It returns two points representing a selected final trajectory (represented as `vtkMRMLMarkupsFiducialNode` and `vtkMRMLMarkupsLineNode`). The final trajectory is selected with the constraints:
+
+- **Target Placement**: Ensures the tool is accurately placed within a user-defined target structure.
+- **Critical Structure Avoidance**: Avoids user-defined critical structures to prevent damage.
+- **Length Constraint**: Maintains the trajectory below a user-defined length for efficiency.
+- **Maximized Distance**: Maximizes the distance from critical structures for added safety.
+
+## Communication with ROS
+
+The selected trajectory points are sent to ROS via OpenIGTLink communication. This system leverages `OpenIGTLinkIF` and `ROS-IGTL-Bridge` to facilitate communication between 3D Slicer and ROS. In ROS, a node referred to as `move_robot_to_pose` is implemented to:
+
+1. **Receive Data**: Accepts trajectory data from the `ROS-IGTL-Bridge`.
+2. **Convert Data**: Transforms the received trajectory points into a pose message.
+3. **Command the Robot**: Utilizes the `moveit_config3` package to instruct the robot to move to the specified position.
 
 ## Prerequisites
 
-Before using the modules inthis repository, ensure you have the following installed:
+Before using the modules in this repository, ensure you have the following installed:
 
 - [3D Slicer](https://www.slicer.org)
 - [ROS Noetic](http://www.ros.org)
@@ -36,6 +47,7 @@ Before using the modules inthis repository, ensure you have the following instal
    - In the `Additional module paths` section, click the `Add` button and browse to the directory where the PathPlanningV1 extension is located.
    - Select the folder containing the PathPlanningV1 extension and click `OK`.
    - Restart 3D Slicer.
+   - Go to `Modules` > `Examples`. The PathPlanningV1 extension should be visible here. 
 
 ### Step 2: Install ROS Noetic and Dependencies
 
@@ -55,50 +67,86 @@ Before using the modules inthis repository, ensure you have the following instal
      catkin_make
      ```
 
-### Step 3: Clone the GitHub Repository for MoveIt! Config
+### Step 3: Configuring and Launching Your MoveIt! Package
 
-1. **Clone the moveit_config3 Config Package**:
-   - Navigate to the `src` directory of your ROS workspace:
+In this step, you will configure and launch your MoveIt! package. This involves downloading the necessary directories, updating the URDF file path, sourcing the workspace, and launching the MoveIt! configuration. Follow these detailed instructions to complete the setup:
+
+1. **Download and Extract the `moveit_config3` Directory**
+   - Download and extract the directory:
      ```bash
+     # Navigate to your catkin workspace's src directory
      cd ~/catkin_ws/src
+
+     # Download the zip file of the repository
+     wget https://github.com/Farhana-M/Image-Guided-Robotic-Navigation/archive/main.zip -O Image-Guided-Robotic-Navigation.zip
+
+     # Extract the zip file
+     unzip Image-Guided-Robotic-Navigation.zip
+
+     # Move the extracted contents to the new directory
+     mv Image-Guided-Robotic-Navigation-main/moveit_config3 ~/catkin_ws/src/moveit_config3
+
+     # Clean up
+     rm -rf Image-Guided-Robotic-Navigation.zip Image-Guided-Robotic-Navigation-main
      ```
-   - Clone the repository:
+
+2. **Download the Robot's URDF**:
+   - Download the URDF file for the 6dof robot from the [GitHub directory](https://github.com/Farhana-M/Image-Guided-Robotic-Navigation/blob/main/URDF/6dof_final_V4.urdf).
+
+3. **Locate and Edit the `.setup_assistant` File**:
+   - Navigate to the folder where the `.setup_assistant` file is located. This can be found within the `moveit_config3` configuration package:
      ```bash
-     git clone https://github.com/Farhana-M/Image-Guided-Robotic-Navigation/tree/main/moveit_config3
+     cd ~/catkin_ws/src/moveit_config3
      ```
+   - Open the `.setup_assistant` file in a text editor:
+     ```bash
+     nano .setup_assistant
+     ```
+   - Find the section that specifies the path to the URDF file. It should look something like this:
+     ```yaml
+     moveit_setup_assistant_config:
+       URDF:
+         package: ""
+         relative_path: /home/rosbox/Downloads/6dof_final_V4.urdf
+         xacro_args: ""
+       SRDF:
+         relative_path: config/6dof_robot.srdf
+       CONFIG:
+         author_name: FM
+         author_email: moosafarhana@gmail.com
+         generated_timestamp: 1717066434
+     ```
+   - Update the `relative_path` to point to the new location of your URDF file. For example:
+     ```yaml
+     moveit_setup_assistant_config:
+       URDF:
+         package: ""
+         relative_path: /home/rosbox/catkin_ws/src/moveit_config3/6dof_final_V4.urdf
+         xacro_args: ""
+       SRDF:
+         relative_path: config/6dof_robot.srdf
+       CONFIG:
+         author_name: FM
+         author_email: moosafarhana@gmail.com
+         generated_timestamp: 1717066434
+     ```
+   - Save the changes:
+     - Press `Ctrl+O` to save.
+     - Press `Enter` to confirm.
+   - Exit nano:
+     - Press `Ctrl+X` to exit.
 
-### Step 4: Install Dependencies and Build Workspace
-
-1. **Install Dependencies**:
-   - Navigate to your ROS workspace:
+4. **Source the Workspace**:
+   - Navigate to your catkin workspace and source the workspace:
      ```bash
      cd ~/catkin_ws
-     ```
-   - Install dependencies:
-     ```bash
-     rosdep install --from-paths src --ignore-src -r -y
+     source devel/setup.bash
      ```
 
-2. **Build the Workspace**:
-   - Build the ROS workspace:
+5. **Launch MoveIt!**:
+   - Launch the MoveIt! configuration to verify everything is working:
      ```bash
-     catkin_make
-     ```
-   - Alternatively, if using `catkin_tools`:
-     ```bash
-     catkin build
-     ```
-
-3. **Source the Workspace**:
-   - Source the workspace:
-     ```bash
-     source ~/catkin_ws/devel/setup.bash
-     ```
-
-4. **Change the Path to the URDF**:
-   - Ensure that the path to the robot's URDF file is correctly set in the MoveIt! configuration files. Typically, this can be found and modified in the `moveit_config3/config` directory, for example in the `robot_description.yaml` file:
-     ```yaml
-     robot_description: 'file:/path/to/6dof_final_V4.urdf'
+     roslaunch moveit_config3 demo.launch
      ```
 
 ## Using PathPlanningV1
@@ -113,14 +161,14 @@ Before using the modules inthis repository, ensure you have the following instal
 ### Step 2: Set Input Data
 
 1. **Select PathPlanningV1 Module**:
-   - In 3D Slicer, navigate to the `PathPlanningV1` module.
+   - In 3D Slicer, navigate to the `PathPlanningV1` module (`Modules` > `Examples`).
 
 2. **Input Parameters**:
    - Select the target region from the dropdown menu (e.g., `r_hippo` in this dataset).
-   - Select a critical structure.
-   - Set the entry and target points.
+   - Select a critical structure (e.g., `ventricles` or `vessels`in this dataset).
+   - Set the entry and target points (e.g., `entries` and `targets`in this dataset).
    - Use the slider to set a length threshold (0 to 200 mm).
-   - Select `Create new point list in output Fiducials`.
+   - Select `Create new point list` in Output Fiducials dropdown list.
    - The `Output Fiducials` will contain the target points within the target region.
 
 3. **Generate Trajectory**:
@@ -132,7 +180,7 @@ Before using the modules inthis repository, ensure you have the following instal
 ### Step 3: Send Data to ROS Using OpenIGTLink
 
 1. **Configure 3D Slicer as the Server**:
-   - Open the `OpenIGTLinkIF` module in 3D Slicer.
+   - Open the `OpenIGTLinkIF` module in 3D Slicer (`Modules` >`IGT` > `OpenIGTLinkIF`).
    - Add a new connector and configure it as a server:
      - Set the `Connector Name` to something identifiable, e.g., `SlicerToROS`.
      - Set the `Type` to `Server`.
@@ -141,50 +189,92 @@ Before using the modules inthis repository, ensure you have the following instal
    - Click `Activate` to start the server.
 
 2. **Configure ROS as the Client**:
-   - On your ROS machine, use the ROS IGTL Bridge to connect to the 3D Slicer server:
+   - If you are using a virtual machine to run ROS, make sure you have “NAT” enabled on your network.
+   - Open a new terminal on your ROS machine.
+   - Navigate to your catkin workspace:
+     ```bash
+     cd ~/catkin_ws
+     ```
+   - Source the workspace:
+     ```bash
+     source devel/setup.bash
+     ```
+   - Edit the `bridge.launch` file to set the server address and port number to match Slicer's address and port number:
+     ```bash
+     nano src/ros_igtl_bridge/launch/bridge.launch
+     ```
+   - Locate and update the parameters for the server address and port number. If you are running ROS on a virtual machine, the server address will typically be `10.0.2.2`. If you have configured your NAT correctly, your real computer's `localhost` should map to `10.0.2.2` on the virtual machine.
+     ```xml
+     <param name="server_ip" value="10.0.2.2" />
+     <param name="server_port" value="18944" />
+     ```
+   - Save the changes:
+     - Press `Ctrl+O` to save.
+     - Press `Enter` to confirm.
+   - Exit nano:
+     - Press `Ctrl+X` to exit.
+   - Use the ROS IGTL Bridge to connect to the 3D Slicer server:
      ```bash
      roslaunch ros_igtl_bridge bridge.launch
      ```
+   - If prompted, select ROS as client and enter the IP address and port number of the 3D Slicer server.
 
 ### Step 4: Launch MoveIt!
 
 1. **Download move_robot_to_pose.py**:
-   - Download the `move_robot_to_pose.py` script from the [GitHub repository](https://github.com/Farhana-M/Image-Guided-Robotic-Navigation/tree/main/move_robot_to_pose).
-     
+   - Download the `move_robot_to_pose.py` script from the [GitHub directory](https://github.com/Farhana-M/Image-Guided-Robotic-Navigation/tree/main/move_robot_to_pose).
+
 2. **Add to Workspace and Make Executable**:
    - Move the downloaded script to your ROS workspace:
      ```bash
-     mv path/to/move_robot_to_pose.py ~/catkin_ws/src/moveit_config3/
+     mv path/to/move_robot_to_pose.py ~/catkin_ws/src/moveit_config3
      ```
    - Make the script executable:
      ```bash
      chmod +x ~/catkin_ws/src/moveit_config3/move_robot_to_pose.py
-     
-3. **Launch MoveIt!**:
-   - Navigate to the launch directory of the `moveit_config` package:
+     ```
+
+3. **Launch roscore**:
+   - Open a new terminal, before starting `roscore`, source the ROS Noetic setup file:
      ```bash
-     cd ~/catkin_ws/src/moveit_config3/launch
+     source /opt/ros/noetic/setup.bash
+     ```
+   - Start the ROS master:
+     ```bash
+     roscore
+     ```
+
+4. **Launch MoveIt!**:
+   - Open another terminal(if not already opened) and launch the `moveit_config3` package:
+     ```bash
+     cd ~/catkin_ws
+     ```
+   - Source the workspace:
+     ```bash
+     source devel/setup.bash
      ```
    - Launch the MoveIt! configuration:
      ```bash
      roslaunch moveit_config3 demo.launch
      ```
-3. **Add to Workspace and Make Executable**:
-   - Move the downloaded script to your ROS workspace:
-     ```bash
-     mv path/to/move_robot_to_pose.py ~/catkin_ws/src/moveit_config3/
-     ```
-   - Make the script executable:
-     ```bash
-     chmod +x ~/catkin_ws/src/moveit_config3/move_robot_to_pose.py
 
-4. **Run the ROS Node**:
+5. **Run the ROS Node**:
+   - Open another terminal and navigate to your catkin workspace:
+     ```bash
+     cd ~/catkin_ws
+     ```
+   - Source the workspace:
+     ```bash
+     source devel/setup.bash
+     ```
    - Execute the ROS node to move the robot:
      ```bash
      rosrun moveit_config3 move_robot_to_pose.py
      ```
 
-4. **Send Trajectory Points**:
+### Step 5: Send Trajectory Points to ROS
+
+1. **Send Trajectory Points**:
    - In 3D Slicer, press the `Send` button to send the `Trajectory Points` to ROS.
    - The motion will be planned and executed.
    - If the pose, orientation, or target is not achieved, a message will be displayed to the user.
