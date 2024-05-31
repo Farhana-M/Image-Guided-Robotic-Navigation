@@ -149,7 +149,7 @@ Before using the modules inthis repository, ensure you have the following instal
 ### Step 4: Launch MoveIt!
 
 1. **Download move_robot_to_pose.py**:
-   - Download the `move_robot_to_pose.py` script from the [GitHub repository](https://github.com/yourusername/pathplanning_moveit_config).
+   - Download the `move_robot_to_pose.py` script from the [GitHub repository](https://github.com/Farhana-M/Image-Guided-Robotic-Navigation/tree/main/move_robot_to_pose).
      
 2. **Add to Workspace and Make Executable**:
    - Move the downloaded script to your ROS workspace:
