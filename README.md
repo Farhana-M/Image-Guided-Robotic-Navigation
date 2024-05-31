@@ -30,7 +30,7 @@ Before using the modules inthis repository, ensure you have the following instal
    - Install 3D Slicer following the provided instructions.
 
 2. **Download and Add PathPlanningV1 Extension**:
-   - Download the PathPlanningV1 extension package from the [GitHub repository](https://github.com/yourusername/PathPlanningV1).
+   - Download the PathPlanningV1 extension package from the [GitHub repository](https://github.com/Farhana-M/Image-Guided-Robotic-Navigation/tree/main/PathPlanningV1).
    - Open 3D Slicer.
    - Go to `Edit` > `Application Settings` > `Modules`.
    - In the `Additional module paths` section, click the `Add` button and browse to the directory where the PathPlanningV1 extension is located.
@@ -57,7 +57,7 @@ Before using the modules inthis repository, ensure you have the following instal
 
 ### Step 3: Clone the GitHub Repository for MoveIt! Config
 
-1. **Clone the PathPlanning MoveIt! Config Package**:
+1. **Clone the moveit)config3 Config Package**:
    - Navigate to the `src` directory of your ROS workspace:
      ```bash
      cd ~/catkin_ws/src
