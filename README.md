@@ -106,7 +106,7 @@ Before using the modules inthis repository, ensure you have the following instal
 ### Step 1: Prepare Your Data
 
 1. **Upload Data**:
-   - Download the brain parcellation set from the [GitHub repository](https://github.com/yourusername/brain_parcellation).
+   - Download the brain parcellation set from the [GitHub repository](https://github.com/Farhana-M/Image-Guided-Robotic-Navigation/tree/main/BrainParcellation).
    - Load the data into 3D Slicer.
    - When the data is loaded, select `Show Options` and ensure to select `brainstem`, `cortex`, `r_hippo`, `r_mtg`, `ventricles`, and `vessels` as label maps.
 
