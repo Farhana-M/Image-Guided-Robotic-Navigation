@@ -42,6 +42,9 @@ Before using the modules in this repository, ensure you have the following insta
 
 2. **Download and Add PathPlanningV1 Extension**:
    - Download the repository from the [GitHub repository](https://github.com/Farhana-M/Image-Guided-Robotic-Navigation).
+     - Go to the repository page.
+     - Click on the green "Code" button.
+     - Select "Download ZIP" from the dropdown menu.
    - Extract the downloaded ZIP file to your desired location.
    - Open 3D Slicer.
    - Go to `Edit` > `Application Settings` > `Modules`.
