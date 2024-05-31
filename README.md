@@ -41,13 +41,14 @@ Before using the modules in this repository, ensure you have the following insta
    - Install 3D Slicer following the provided instructions.
 
 2. **Download and Add PathPlanningV1 Extension**:
-   - Download the PathPlanningV1 extension package from the [GitHub repository](https://github.com/Farhana-M/Image-Guided-Robotic-Navigation/tree/main/PathPlanningV1).
+   - Download the repository from the [GitHub repository](https://github.com/Farhana-M/Image-Guided-Robotic-Navigation).
+   - Extract the downloaded ZIP file to your desired location.
    - Open 3D Slicer.
    - Go to `Edit` > `Application Settings` > `Modules`.
-   - In the `Additional module paths` section, click the `Add` button and browse to the directory where the PathPlanningV1 extension is located.
-   - Select the folder containing the PathPlanningV1 extension and click `OK`.
+   - In the `Additional module paths` section, click the `Add` button and browse to the `PathPlanningV1` folder within the extracted repository.
+   - Select the folder and click `OK`.
    - Restart 3D Slicer.
-   - Go to `Modules` > `Examples`. The PathPlanningV1 extension should be visible here. 
+   - Go to `Modules` > `Examples`. The PathPlanningV1 extension should be visible here.If it does not appear, try a second time.
 
 ### Step 2: Install ROS Noetic and Dependencies
 
@@ -90,8 +91,8 @@ In this step, you will configure and launch your MoveIt! package. This involves 
      rm -rf Image-Guided-Robotic-Navigation.zip Image-Guided-Robotic-Navigation-main
      ```
 
-2. **Download the Robot's URDF**:
-   - Download the URDF file for the 6dof robot from the [GitHub directory](https://github.com/Farhana-M/Image-Guided-Robotic-Navigation/blob/main/URDF/6dof_final_V4.urdf).
+2. **Add the Robot's URDF file to your ROS environment**:
+   - Add the URDF file for the 6dof robot from the extracted repository to your desktop on which ROS is running.
 
 3. **Locate and Edit the `.setup_assistant` File**:
    - Navigate to the folder where the `.setup_assistant` file is located. This can be found within the `moveit_config3` configuration package:
@@ -121,7 +122,7 @@ In this step, you will configure and launch your MoveIt! package. This involves 
      moveit_setup_assistant_config:
        URDF:
          package: ""
-         relative_path: /home/rosbox/catkin_ws/src/moveit_config3/6dof_final_V4.urdf
+         relative_path: /home/rosbox/Desktop/6dof_final_V4.urdf
          xacro_args: ""
        SRDF:
          relative_path: config/6dof_robot.srdf
@@ -154,8 +155,7 @@ In this step, you will configure and launch your MoveIt! package. This involves 
 ### Step 1: Prepare Your Data
 
 1. **Upload Data**:
-   - Download the brain parcellation set from the [GitHub repository](https://github.com/Farhana-M/Image-Guided-Robotic-Navigation/tree/main/BrainParcellation).
-   - Load the data into 3D Slicer.
+   - Load the data from the BrainParcellation folder in the extracted repository into 3D Slicer.
    - When the data is loaded, select `Show Options` and ensure to select `brainstem`, `cortex`, `r_hippo`, `r_mtg`, `ventricles`, and `vessels` as label maps.
 
 ### Step 2: Set Input Data
@@ -221,11 +221,11 @@ In this step, you will configure and launch your MoveIt! package. This involves 
 
 ### Step 4: Launch MoveIt!
 
-1. **Download move_robot_to_pose.py**:
-   - Download the `move_robot_to_pose.py` script from the [GitHub directory](https://github.com/Farhana-M/Image-Guided-Robotic-Navigation/tree/main/move_robot_to_pose).
+1. **Add move_robot_to_pose.py to ROS environment**:
+   - Copy the move_robot_to_pose.py script from the extracted repository to your ROS desktop.
 
 2. **Add to Workspace and Make Executable**:
-   - Move the downloaded script to your ROS workspace:
+   - Move the script to your ROS workspace:
      ```bash
      mv path/to/move_robot_to_pose.py ~/catkin_ws/src/moveit_config3
      ```
